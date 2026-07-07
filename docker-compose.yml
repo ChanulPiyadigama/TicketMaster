@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # 1. PostgreSQL Database Instance
+  postgres_db:
+    image: postgres:15-alpine
+    container_name: ticketing_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: supersecretpassword
+      POSTGRES_DB: ticketing_system
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # 2. Redis Cache Instance (Used for fast counters and locks)
+  redis_cache:
+    image: redis:7-alpine
+    container_name: ticketing_redis
+    restart: always
+    command: redis-server --notify-keyspace-events Ex
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:
